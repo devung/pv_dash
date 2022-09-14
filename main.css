@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap');
+
+
+* {font-family: 'Readex Pro';}
+body {
+    background-color: #2a2f42;
+}
+
+section.main {
+    background-color: #2a2f42;
+}
+
+
+div.streamlit-wide {
+    max-width: 1500px;
+}
+
+span.css-10trblm {
+    color: white;
+}
+
+div.stMarkdown {
+    color: white;
+}
+/* css-znku1x */

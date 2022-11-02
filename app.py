@@ -1,7 +1,7 @@
-import pandas as pd
-import plotly.express as px
+import pandas as pd                 # pip install pandas openpyxl
+import plotly.express as px         # pip install plotly-express
 import plotly.graph_objects as go
-import streamlit as st
+import streamlit as st              # pip install streamlit
 import calendar
 
 st.set_page_config(
@@ -13,14 +13,7 @@ st.set_page_config(
 with open('main.css') as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html = True)
 
-df = pd.read_excel(
-    io = "pv.xlsx",
-    engine = 'openpyxl',
-    sheet_name = 'EB JUN - MAR',
-    usecols = 'A:F',
-    nrows = 366
-)
-df = df.drop([0,0])
+df = pd.read_csv('PV.csv')
 
 df.columns = df.columns.str.replace(' ', '_')
 df['Date_and_time'] = pd.to_datetime(df['Date_and_time'], format = '%Y-%m-%dT%H:%M:%S')
@@ -139,7 +132,7 @@ merged_production_grph.update_layout(
     paper_bgcolor='#363b4f'
 )
 
-st.markdown('##### Total Solar Production')
+st.markdown('##### Total Solar Production (kWh)')
 
 ordered_months = df.Month.iloc[
        pd.to_datetime(df.Month, format='%B').argsort()
@@ -154,7 +147,8 @@ total_month_df = pd.pivot_table(
 st.dataframe(total_month_df)
 st.plotly_chart(merged_production_grph)
 
-st.markdown('##### Highest Solar Production')
+st.markdown('##### Highest Solar Production (kWh)')
+st.markdown('Highest recorded solar production in one day')
 max_month_df = pd.pivot_table(
     df,
     index = 'Year',
@@ -164,7 +158,8 @@ max_month_df = pd.pivot_table(
     fill_value = 0).reindex(columns = ordered_months).round(0).astype(int)
 st.dataframe(max_month_df)
 
-st.markdown('##### Average Solar Production')
+st.markdown('##### Average Solar Production (kWh)')
+st.markdown('Daily average solar produced')
 avg_month_df = pd.pivot_table(
     df,
     index = 'Year',
@@ -205,7 +200,6 @@ query_production_grph = px.bar(
     groupby_query_df,
     x = 'Month',
     y = ['Total_production', 'Own_consumption', 'Energy_to_grid'],
-    # color = ['', '', 'Total production', 'Solar consumption', 'Energy to the grid'],
     title = '<b>Production</b>',
     template = "plotly_white",
     labels = {'Own_consumption': 'Solar', },
@@ -222,7 +216,6 @@ query_consumption_grph = px.bar(
     groupby_query_df,
     x = 'Month',
     y = ['Total_consumption', 'Own_consumption', 'Energy_from_grid'],
-    # color = ['Total consumption', 'Solar consumption', 'Energy from the grid'],
     title = '<b>Consumption</b>',
     template = 'plotly_white',
     barmode = 'group'
